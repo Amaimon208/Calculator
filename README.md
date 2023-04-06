@@ -1,2 +1,2 @@
-# KalkulatorDTP
-Zadanie rekrutacyjne DTP, kalkulator obsługujący komendy 
+# Calculator
+Console application calculator
