@@ -2,13 +2,15 @@ package com.example.calculator;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.example.calculator.Exceptions.DivisionByZeroException;
+import com.example.calculator.JCommanderClasses.OperationParameters;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Scanner;
 
-import static com.example.calculator.Calculator.printArchivedOperation;
+import static com.example.calculator.History.*;
 
 @SpringBootApplication
 public class CalculatorApplication implements CommandLineRunner {
@@ -17,7 +19,7 @@ public class CalculatorApplication implements CommandLineRunner {
         SpringApplication.run(CalculatorApplication.class, args);
     }
 
-    private Parameters parameters = new Parameters();
+    private OperationParameters parameters = new OperationParameters();
     private JCommander jCommander;
     private String[] params;
 
@@ -49,23 +51,25 @@ public class CalculatorApplication implements CommandLineRunner {
         try {
             jCommander.parse(params);
         } catch (ParameterException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Given command was inappropriet, type --help to get list of operators.");
         }
     }
 
-    private void handleInput(Parameters parameters, JCommander jCommander) {
+    private void handleInput(OperationParameters parameters, JCommander jCommander) {
         if (parameters.isExit()) {
             System.exit(0);
         } else if (parameters.isHelp()) {
             jCommander.usage();
         } else if (parameters.isHistory()) {
             printArchivedOperation();
+        } else if (parameters.isDetails()) {
+            printDetailedOperation();
         } else {
             try {
-                parameters.calculate();
+                parameters.runOperation();
             } catch (IllegalStateException e) {
                 System.out.println("Inappropriate expression, type --help to get list of operators.");
-            } catch (Exception e) {
+            } catch (DivisionByZeroException e) {
                 System.out.println(e.getMessage());
             }
         }

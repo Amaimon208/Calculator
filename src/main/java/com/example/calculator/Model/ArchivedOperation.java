@@ -1,6 +1,7 @@
 package com.example.calculator.Model;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArchivedOperation {
@@ -8,28 +9,36 @@ public class ArchivedOperation {
             = BigInteger.ONE;
 
     private final BigInteger id;
-    private final char operator;
-    private final List<Double> operands;
+    private final Operation operation;
+    private final List<String> steps;
     private final Double result;
 
-    public ArchivedOperation(char operator, List<Double> operands, Double result) {
+    public ArchivedOperation(Operation operation, List<String> steps) {
         this.id = idCounter;
-        this.operator = operator;
-        this.operands = operands;
-        this.result = result;
+        this.operation = operation;
+        this.steps = steps;
+        if(steps.size()>0){
+            this.result = Double.valueOf(steps.get(steps.size()-1));
+        }else{
+            this.result=0.;
+        }
         idCounter = idCounter.add(BigInteger.ONE);
     }
 
     @Override
     public String toString() {
         String operationString = id + ". \t";
-        ;
-        operationString += operands.get(0).toString() + " ";
-        for (int i = 1; i < operands.size(); i++) {
-            operationString += operator + " ";
-            operationString += operands.get(i).toString() + " ";
+        operationString += operation.toString();
+        operationString += " = " + result.toString();
+        return operationString;
+    }
+
+    public String detailedToString() {
+        String operationString = id + ". \t";
+        operationString += operation.toString()+"\n\t";
+        for(String step: steps){
+            operationString += step+"\n\t";
         }
-        operationString += "= " + result.toString();
         return operationString;
     }
 }
